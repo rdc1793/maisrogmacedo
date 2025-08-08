@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jornal Berliner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arimo', sans-serif;
+      background-color: #fff;
+      color: #000;
+    }
+    header {
+      background-color: #dbdbdb;
+      padding: 1rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    nav {
+      background-color: #dbdbdb;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 0.5rem 0;
+    }
+    nav a {
+      color: #000;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: rgb(0,208,130);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .feed-block, .headline {
+      min-height: 200px;
+      border: 1px solid #dbdbdb;
+      padding: 1rem;
+      background-color: #f9f9f9;
+    }
+    .headline {
+      grid-column: span 2;
+      background-color: #eee;
+    }
+    .headline h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .headline img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 0.5rem;
+    }
+    .feed-block h3 {
+      font-size: 1.2rem;
+      color: #333;
+    }
+    .feed-block a {
+      text-decoration: none;
+      color: rgb(0,208,130);
+    }
+    .feed-block a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      background-color: #dbdbdb;
+      padding: 2rem 1rem 1rem;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .footer-links a {
+      margin: 0 0.5rem;
+      color: #000;
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      color: rgb(0,208,130);
+    }
+    .copyright {
+      font-size: 0.9rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jornal Berliner</h1>
+  </header>
+  <nav>
+    <a href="#">Início</a>
+    <a href="#">Política</a>
+    <a href="#">Economia</a>
+    <a href="#">Cultura</a>
+    <a href="#">Esportes</a>
+    <a href="#">Contato</a>
+  </nav>
+  <main class="grid">
+    <section class="headline" id="manchete">
+      <span>Carregando...</span>
+    </section>
+    <section class="feed-block" id="feed1">
+      <span>Carregando...</span>
+    </section>
+    <section class="feed-block" id="feed2">
+      <span>Carregando...</span>
+    </section>
+    <section class="feed-block" id="feed3">
+      <span>Carregando...</span>
+    </section>
+    <section class="feed-block" id="feed4">
+      <span>Carregando...</span>
+    </section>
+  </main>
+  <footer>
+    <div class="footer-links">
+      <a href="#">Sobre</a>
+      <a href="#">Anuncie</a>
+      <a href="#">Privacidade</a>
+      <a href="#">Ajuda</a>
+    </div>
+    <div class="copyright">
+      © 2025 Jornal Berliner. Todos os direitos reservados.
+    </div>
+  </footer>
+  <script>
+    async function carregarFeed(blocoId, url, isManchete = false) {
+      try {
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        const container = document.getElementById(blocoId);
+
+        if (!data.items || data.items.length === 0) {
+          container.innerHTML = ""; // sem conteúdo e sem mensagem de erro
+          return;
+        }
+
+        container.innerHTML = ""; // Limpa o "Carregando..."
+
+        if (isManchete) {
+          const item = data.items[0];
+          container.innerHTML = `
+            <h2>${item.title}</h2>
+            ${item.thumbnail ? `<img src="${item.thumbnail}" alt="">` : ""}
+            <p>${item.description}</p>
+            <a href="${item.link}">Leia mais</a>
+          `;
+        } else {
+          const maxItems = 4;
+          data.items.slice(0, maxItems).forEach(item => {
+            const article = document.createElement('div');
+            article.innerHTML = `
+              <h3>${item.title}</h3>
+              <p>${item.description}</p>
+              <a href="${item.link}">Leia mais</a>
+            `;
+            container.appendChild(article);
+          });
+        }
+      } catch (e) {
+        // falha silenciosa, mantém o container vazio
+        const container = document.getElementById(blocoId);
+        container.innerHTML = "";
+      }
+    }
+
+    carregarFeed('manchete', 'https://g1.globo.com/rss/g1/', true);
+    carregarFeed('feed1', 'https://g1.globo.com/rss/economia/');
+    carregarFeed('feed2', 'https://g1.globo.com/rss/mundo/');
+    carregarFeed('feed3', 'https://g1.globo.com/rss/pop-arte/');
+    carregarFeed('feed4', 'https://g1.globo.com/rss/esporte/');
+
+    setInterval(() => {
+      carregarFeed('manchete', 'https://g1.globo.com/rss/g1/', true);
+      carregarFeed('feed1', 'https://g1.globo.com/rss/economia/');
+      carregarFeed('feed2', 'https://g1.globo.com/rss/mundo/');
+      carregarFeed('feed3', 'https://g1.globo.com/rss/pop-arte/');
+      carregarFeed('feed4', 'https://g1.globo.com/rss/esporte/');
+    }, 60000);
+  </script>
+</body>
+</html>
