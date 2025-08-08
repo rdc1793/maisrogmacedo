@@ -18,7 +18,7 @@
     /* Menu estilo Berliner (discreto) */
     nav{background:#dbdbdb;border-top:1px solid rgba(0,0,0,0.04);border-bottom:1px solid rgba(0,0,0,0.04)}
     .menu{max-width:1200px;margin:0 auto;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
-    .menu-left{max-width: 768px;display:flex;gap:12px;align-items:center}
+    .menu-left{display:flex;gap:12px;align-items:center}
     .menu-left a{color:#000;text-decoration:none;font-weight:700;padding:6px 8px}
     .menu-left a:hover{color:rgb(0,208,130)}
 
@@ -69,7 +69,16 @@
       .manchete{min-height:200px;padding:16px}
       .manchete .titulo{font-size:1.6rem}
       .hamburger{display:inline-block}
-      .menu-left{display:none}
+      .menu-left{(max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul li {
+        margin: 5px 0;
+    }
+}}
     }
 
     @media (max-width:480px){
