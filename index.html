@@ -63,13 +63,13 @@
     .manchete .meta{color:#666;font-size:0.85rem;margin-top:6px}
 
     /* Responsive: adaptar para mobile com uma coluna (manchete em topo) */
-  @media (max-width: 768px){
+  @media (max-width: 900px){
       main{grid-template-columns:1fr;padding:0 10px}
       .conteudo{grid-template-columns:1fr}
       .manchete{min-height:200px;padding:16px}
       .manchete .titulo{font-size:1.6rem}
-      .hamburger{display:inline-block}
-      .menu-left{display:none}
+      .hamburger{display:block}
+      .menu-left{display:block}
     }
 
     @media (max-width:480px){
